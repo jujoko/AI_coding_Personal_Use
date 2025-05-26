@@ -17,3 +17,8 @@ class Debug: # Debugging utility class #디버깅 역할을 할 클래스.
         code = input()  # Get code from user input
         self.code = code
         
+    def check_grammar(self):
+        import ast
+        error=ast.parse(self.code)
+        print(error)
+        
