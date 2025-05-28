@@ -1,0 +1,9 @@
+# 🤗 Transformers 및 모델 실행 필수
+transformers>=4.37.0
+accelerate>=0.24.1
+bitsandbytes>=0.42.0
+
+# 🧪 선택 (실험용/디버깅용)
+torch>=2.1.0
+scipy
+numpy
