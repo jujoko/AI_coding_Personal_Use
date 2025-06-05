@@ -45,15 +45,8 @@ def run_pylint_to_file(code: str, output_file_path: str = "pylint_output.txt") -
     from pylint.lint import Run
     import os
     tmp_file_path = "tmp_code.py"
-    # python 파일일 경우.
-    if code.endswith(".py") and os.path.isfile(code):
-        with open(code, "r", encoding="utf-8") as tmp_file:
-            code = tmp_file.read()
-        with open(tmp_file_path, "w", encoding="utf-8") as tmp_file:
-            tmp_file.write(code)
-    # python 파일이 아니고, 확장자가 없는 경우.
-    else:
-        with open(tmp_file_path, "w", encoding="utf-8") as tmp_file:
+    #무조건 문자열만 받아야 함. .py 파일 받지 않음.
+    with open(tmp_file_path, "w", encoding="utf-8") as tmp_file:
             tmp_file.write(code)
         
     # Run pylint on the temporary file
