@@ -11,13 +11,23 @@ tokenizer = AutoTokenizer.from_pretrained(
 )
 
 # ✅ 3. 모델 로드 (4bit, device_map 자동 할당, CPU 오프로드 가능)
-# 기존 코드 유지하면서 이 부분만 추가하세요
+#GPU를 사용할 수 있으면 사용하도록 변경 -> 속도 더 빨라짐.
+device = "cuda"
+if torch.cuda.is_available():
+    device_map = "auto"
+    max_memory = {0: "20GiB"}  # GPU 0번에 최대 20GiB 사용 허용
+    torch_dtype = torch.float16
+else:
+    device_map = {"": "cpu"}
+    max_memory = {"cpu": "12GiB"}
+    torch_dtype = torch.float32
+
 model = AutoModelForCausalLM.from_pretrained(
     model_name,
-    device_map="auto",
-    torch_dtype=torch.float16,
-    max_memory={"cpu": "12GiB"}  
-)
+    device_map=device_map,
+    torch_dtype=torch_dtype,
+    max_memory=max_memory
+).to(device)
 
 # ✅ 4. 테스트용 응답 함수 (텍스트 프롬프트 입력 → 텍스트 출력)
 def generate_response(prompt: str):
