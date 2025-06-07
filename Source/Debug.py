@@ -69,21 +69,45 @@ def _revise_code_with_pylint(code_file_path: str, output_file_path: str = "pylin
     """Revise the code based on pylint output."""
     with open(output_file_path, "r", encoding="utf-8") as file:
         output_lines = file.readlines()
+    with open(code_file_path, "r", encoding="utf-8") as file:
+        code_lines = file.readlines()
     for i, line in enumerate(output_lines):
         if i == 0: # 첫번째 라인 스킵
             continue
         if not line.strip():  # 빈 줄은 건너뜀
             break
-        _add_string_to_line_in_file(code_file_path, int(line.split(':')[0])-1, f"{i}번째 답변") #pylint_output.line은 1부터 시작. python 코드 line은 0부터 시작.
+        code_line_number = int(line.split(':')[0])-1
+        answer = _make_answer_by_AI(code_lines[code_line_number], line)
+        _add_string_to_line_in_file(code_file_path, code_line_number, f"{answer}") #pylint_output.line은 1부터 시작. python 코드 line은 0부터 시작.
 
 def _add_string_to_line_in_file(file_path: str, line_number: int, add_string: str) -> None:
     """Add a string to a specific line in a file."""
     with open(file_path, "r", encoding="utf-8") as file:
         lines = file.readlines()
 
-    if 0 <= line_number < len(lines):
+    if 0 <= line_number < len(lines):   #코드 길이가 넘어가면 작성하지 않음.
         lines[line_number] = lines[line_number].rstrip() + " #" + add_string + "\n"
 
     with open(file_path, "w", encoding="utf-8") as file:
         file.writelines(lines)
    
+def _make_answer_by_AI(code:str, error:str):
+    import starcoder
+    prompt = """너는 Python 디버깅 전문가야.
+
+아래 code.txt와 error.txt를 보고:
+1. 어떤 문제가 있었는지 설명하고
+2. 수정된 코드를 제시하고
+3. 그 수정이 왜 효과적인지 설명해줘.
+
+[CODE START]
+{}
+[CODE END]
+
+[ERROR START]
+{}
+[ERROR END]
+
+이제 분석 시작해줘.""".format(code, error)
+    return starcoder.generate_response(prompt)
+
