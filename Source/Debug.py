@@ -1,14 +1,15 @@
 import os
 class Debug: # Debugging utility class #디버깅 역할을 할 클래스.
-    def __init__(self, code:str): # code_file: str, code file directory
-        if code.endswith(".py") and os.path.isfile(code):   #code가 .py 파일이라면 .py의 코드를를 읽어오기.
-            with open(code, "r", encoding="utf-8") as code_file:
-                self.code = code_file.read()
-        elif code is not None :  # code가 파일이 아니라면, 저장.
-            self.code = code
-        else:  
-            self.code = ""
-        
+    def __init__(self, code:str=None): # code_file: str, code file directory
+        if code == None:
+            code = ""
+        else :
+            if code.endswith(".py") and os.path.isfile(code):   #code가 .py 파일이라면 .py의 코드를를 읽어오기.
+                with open(code, "r", encoding="utf-8") as code_file:
+                    self.code = code_file.read()
+            else:   # code가 파일이 아니라면, 저장.
+                self.code = code
+
     def get_code(self): #code를 입력 받는 함수
         code = ""
         print("검사받을 코드를 한 행씩 입력해주세요. (종료하려면 '!STOP' 입력)")
