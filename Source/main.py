@@ -1,6 +1,16 @@
+<<<<<<< HEAD
+<<<<<<< Updated upstream
+
+=======
+from transformers import AutoTokenizer, AutoModelForCausalLM
+import torch
+import Debug
+
+=======
 from transformers import AutoTokenizer, AutoModelForCausalLM
 import torch
 
+>>>>>>> feat/debug_class
 # ✅ 모델 이름
 model_name = "deepseek-ai/deepseek-coder-1.3b-instruct"
 
@@ -57,7 +67,11 @@ def create_code(description: str):
 if __name__ == "__main__":
     print("🧠 DeepSeek Coder 1.3B 모델 로드 완료.")
     while True:
+<<<<<<< HEAD
+        print("\n'생성', '수정', '주석', '종료', '디버그' 중 하나를 입력하시오")
+=======
         print("\n'생성', '수정', '주석', '종료' 중 하나를 입력하시오")
+>>>>>>> feat/debug_class
         command = input("💬 Prompt: ").strip()
 
         if command.lower() in ["exit", "quit", "종료"]:
@@ -89,9 +103,36 @@ if __name__ == "__main__":
                 lines.append(line)
             user_code = "\n".join(lines)
             response = modify_code(user_code)
+<<<<<<< HEAD
+        
+        elif command == "디버그":
+            print("\n✏️ 코드를 입력하세요. 또는 .py 경로를 입력하세요. 종료하려면 'End Code' 입력")
+            lines = []
+            while True:
+                line = input()
+                if line.strip() == "End Code":
+                    break
+                lines.append(line)
+            user_code = "\n".join(lines)
+            D = Debug.Debug(user_code)
+            
+            while(True):
+                r = input("강한 검사와 약한 검사 중 선택해주세요 (강한 검사 : s, 약한 검사 w)")
+                if r == 's' or r == 'w':
+                    break
+            if r == 'w' :
+                response = D.check_grammar(strength='weak')
+            else : 
+                response = D.check_grammar(strength='strong')
+=======
 
+>>>>>>> feat/debug_class
         else:
             print("잘못된 입력입니다. 다시 시도하세요.")
             continue
 
         print("\n🧠 답변:\n", response)
+<<<<<<< HEAD
+>>>>>>> Stashed changes
+=======
+>>>>>>> feat/debug_class
