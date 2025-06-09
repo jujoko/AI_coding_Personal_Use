@@ -65,7 +65,7 @@ def run_pylint_to_file(code: str, output_file_path: str = "pylint_output.txt") -
         os.remove(tmp_file_path)
     
 # pylint_output 파일과 temp_code 파일의 내용을 비교. temp_code 파일의 내용에 pylint_output 파일의 내용을 추가하는 함수
-def _revise_code_with_pylint(code_file_path: str, output_file_path: str = "pylint_output.txt") -> None:
+def _revise_code_with_pylint(code_file_path: str, output_file_path: str = "errors.txt") -> None:
     """Revise the code based on pylint output."""
     with open(output_file_path, "r", encoding="utf-8") as file:
         output_lines = file.readlines()
@@ -92,22 +92,20 @@ def _add_string_to_line_in_file(file_path: str, line_number: int, add_string: st
         file.writelines(lines)
    
 def _make_answer_by_AI(code:str, error:str):
-    import starcoder
-    prompt = """너는 Python 디버깅 전문가야.
+    import ai_model_deepseek
+    prompt = """문제 코드, 발생 오류를 보고 오류를 없앨 수정 코드와 오류 발생 원인을 콜론(:) 뒤에 생성해주세요. 문제 코드, 발생 오류는 생성하지 말아주세요. 
+답변 생성 format을 지켜주세요.
+출력은 반드시 한 줄로 작성하고, 줄바꿈, 코드 블록, 불릿포인트, 기타 형식적 요소를 절대 사용하지 마세요. 단일 연속 문자열로만 출력하세요.
+수정 코드와 오류 발생 원인만 생성해주세요. 
+반복 답변을 생성하지 말아주세요.
 
-아래 code.txt와 error.txt를 보고:
-1. 어떤 문제가 있었는지 설명하고
-2. 수정된 코드를 제시하고
-3. 그 수정이 왜 효과적인지 설명해줘.
-
-[CODE START]
+#문제 코드 <- 출력 금지
 {}
-[CODE END]
 
-[ERROR START]
+#발생 오류 - format : <line>:<column>/<message-code>: <message-text> (<optional-extra-info>) <- 출력 금지
 {}
-[ERROR END]
 
-이제 분석 시작해줘.""".format(code, error)
-    return starcoder.generate_response(prompt)
+#답변 생성 
+정답 코드 :,  오류 발생 원인 : """.format(code, error)
+    return ai_model_deepseek.get_AI_answer(prompt)
 
